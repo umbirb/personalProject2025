@@ -145,15 +145,19 @@ def show_main_window(username):
             messagebox.showinfo("Info", "Rate some movies first for recommendations!")
             return
         genre_scores = {}
+        genre_counts = {}
         for movie_id, rating in user_ratings:
             genres = movies_df[movies_df['movieId'] == movie_id]['genres'].values
             if genres:
                 for genre in genres[0].split('|'):
                     genre_scores[genre] = genre_scores.get(genre, 0) + rating
+                    genre_counts[genre] = genre_counts.get(genre, 0) + 1
         if not genre_scores:
             messagebox.showinfo("Info", "No genre data found.")
             return
-        top_genres = sorted(genre_scores, key=genre_scores.get, reverse=True)[:2]
+        # Calculate average ratings for each genre
+        genre_averages = {genre: genre_scores[genre] / genre_counts[genre] for genre in genre_scores}
+        top_genres = sorted(genre_averages, key=genre_averages.get, reverse=True)[:2]
         rated_ids = [movie_id for movie_id, _ in user_ratings]
         recommendations = movies_df[
             (movies_df['genres'].str.contains('|'.join(top_genres))) &
