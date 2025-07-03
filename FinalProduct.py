@@ -6,10 +6,10 @@ import pandas as pd
 import random
 import os
 
-# --- Data Setup ---
+#Data Setup
 MOVIE_CSV = r'c:\Users\harri\Desktop\Software project\ml-latest\movies.csv'
 
-# Try to load the CSV, but don't block the GUI if it fails
+#Try to load the CSV, but don't block the GUI if it fails
 movies_df = None
 try:
     if not os.path.exists(MOVIE_CSV):
@@ -35,7 +35,7 @@ EMOTION_GENRE_MAP = {
     "Nostalgic": "Drama"
 }
 
-# --- Database Setup ---
+#Database Setup
 conn = sqlite3.connect('users.db')
 c = conn.cursor()
 c.execute('''
@@ -86,7 +86,7 @@ def show_main_window(username):
         main_win.destroy()
         root.deiconify()
 
-    # --- Movie Rating Section ---
+    #Movie Rating Section
     rating_frame = tk.LabelFrame(main_win, text="Rate Movies")
     rating_frame.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
 
@@ -130,14 +130,14 @@ def show_main_window(username):
             messagebox.showerror("Error", "Movie not found.")
             return
         movie_id = int(movie_row['movieId'].values[0])
-        # Save rating for this user and movie
+        #Save rating for this user and movie
         c.execute("REPLACE INTO ratings (username, movieId, rating) VALUES (?, ?, ?)", (username, movie_id, rating))
         conn.commit()
         messagebox.showinfo("Success", f"Rated '{movie_title}' with {rating} stars.")
 
     tk.Button(rating_frame, text="Submit Rating", command=submit_rating).grid(row=3, column=0, columnspan=2, pady=5)
 
-    # --- Personalized Recommendation Section ---
+    #Personalized Recommendation Section
     def recommend_movies():
         c.execute("SELECT movieId, rating FROM ratings WHERE username=?", (username,))
         user_ratings = c.fetchall()
@@ -172,7 +172,7 @@ def show_main_window(username):
 
     tk.Button(rating_frame, text="Recommend Movies", command=recommend_movies).grid(row=4, column=0, columnspan=2, pady=5)
 
-    # --- Random Selector by Genre ---
+    #Random Selector by Genre
     genre_frame = tk.LabelFrame(main_win, text="Random Movie by Genre")
     genre_frame.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
 
@@ -196,7 +196,7 @@ def show_main_window(username):
 
     tk.Button(genre_frame, text="Show Random Movies", command=random_by_genre).grid(row=1, column=0, columnspan=2, pady=5)
 
-    # --- Random Selector by Emotion ---
+    #Random Selector by Emotion
     emotion_frame = tk.LabelFrame(main_win, text="Random Movie by Emotion")
     emotion_frame.grid(row=2, column=0, padx=10, pady=10, sticky="ew")
 
@@ -221,10 +221,10 @@ def show_main_window(username):
 
     tk.Button(emotion_frame, text="Show Random Movies", command=random_by_emotion).grid(row=1, column=0, columnspan=2, pady=5)
 
-    # --- Logout Button ---
+    #Logout Button
     tk.Button(main_win, text="Logout", command=logout, fg="red").grid(row=3, column=0, pady=10)
 
-# --- Main Login/Register Window ---
+#Main Login/Register Window
 root = tk.Tk()
 root.title("Login/Register")
 
